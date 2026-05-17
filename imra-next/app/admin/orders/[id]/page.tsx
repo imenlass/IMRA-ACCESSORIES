@@ -2,7 +2,12 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { requireAdmin } from '@/lib/admin';
 import OrderStatusManager from '@/components/admin/OrderStatusManager';
-import type { OrderWithItems } from '@/types';
+import type { Order, OrderItem } from '@/types';
+
+type OrderItemWithProduct = OrderItem & {
+  products: { image_url: string } | null;
+};
+type AdminOrderDetailData = Order & { order_items: OrderItemWithProduct[] };
 
 export const dynamic = 'force-dynamic';
 
@@ -24,11 +29,7 @@ export default async function AdminOrderDetail({ params }: { params: { id: strin
     .maybeSingle();
 
   if (error || !data) notFound();
-  const order = data as OrderWithItems & {
-    order_items: (OrderWithItems['order_items'][number] & {
-      products: { image_url: string } | null;
-    })[];
-  };
+  const order = data as AdminOrderDetailData;
 
   return (
     <div className="admin-page">

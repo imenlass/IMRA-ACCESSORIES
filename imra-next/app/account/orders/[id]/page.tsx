@@ -2,7 +2,12 @@ import { notFound, redirect } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import Footer from '@/components/Footer';
-import type { OrderWithItems } from '@/types';
+import type { Order, OrderItem } from '@/types';
+
+type OrderItemWithProduct = OrderItem & {
+  products: { image_url: string; slug: string } | null;
+};
+type OrderDetailData = Order & { order_items: OrderItemWithProduct[] };
 
 export const dynamic = 'force-dynamic';
 
@@ -30,11 +35,7 @@ export default async function OrderDetailPage({ params }: { params: { id: string
     .single();
 
   if (error || !data) notFound();
-  const order = data as OrderWithItems & {
-    order_items: (OrderWithItems['order_items'][number] & {
-      products: { image_url: string; slug: string } | null;
-    })[];
-  };
+  const order = data as OrderDetailData;
 
   const currentStep = STATUS_STEPS.indexOf(order.status as (typeof STATUS_STEPS)[number]);
   const isCancelled = order.status === 'cancelled';

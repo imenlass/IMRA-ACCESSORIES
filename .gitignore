@@ -65,6 +65,7 @@ desktop.ini
 # ─── Editors / IDEs ──────────────────────────────────────────────
 .vscode/
 .idea/
+.claude/         # Claude Code working directory
 *.swp
 *.swo
 *.swn
