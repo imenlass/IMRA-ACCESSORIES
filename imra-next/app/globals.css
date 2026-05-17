@@ -958,6 +958,59 @@ footer.site-footer p {
   margin-bottom: 16px;
 }
 
+/* "Email already registered" branch — shown when Supabase silently
+   refuses signup because the address is already in auth.users. */
+.auth-already-block {
+  text-align: center;
+  padding: 12px 4px;
+}
+.auth-already-block .icon {
+  font-size: 28px;
+  color: var(--gold);
+  margin-bottom: 14px;
+  display: inline-block;
+}
+.auth-already-block h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 32px;
+  color: white;
+  font-weight: 300;
+  margin-bottom: 16px;
+  line-height: 1.1;
+}
+.auth-already-block h2 em { color: var(--gold); font-style: italic; }
+.auth-already-block p {
+  color: #aaa;
+  font-size: 13px;
+  line-height: 1.85;
+  margin-bottom: 26px;
+  font-weight: 300;
+}
+.auth-already-block p strong {
+  color: var(--gold);
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+.auth-already-block .btn {
+  display: inline-block;
+  margin-bottom: 14px;
+  min-width: 240px;
+  text-align: center;
+}
+.auth-already-back {
+  display: inline-block;
+  background: transparent;
+  border: none;
+  color: #888;
+  font-family: inherit;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  padding: 6px 8px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.auth-already-back:hover { color: var(--gold); }
+
 /* ── ACCOUNT / ORDERS ── */
 .account-page {
   padding: 140px 0 80px;

@@ -20,6 +20,10 @@ export default function SignupPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  // When Supabase silently rejects a signup for an existing email, we don't
+  // get an error — we get a success-shaped response with an empty `identities`
+  // array. We track that case explicitly to show a clear "sign in instead" UX.
+  const [emailAlreadyRegistered, setEmailAlreadyRegistered] = useState<string | null>(null);
 
   useEffect(() => {
     if (!authLoading && user) {
@@ -31,6 +35,7 @@ export default function SignupPage() {
     e.preventDefault();
     setError(null);
     setSuccess(null);
+    setEmailAlreadyRegistered(null);
 
     if (password.length < 6) {
       setError('Le mot de passe doit contenir au moins 6 caractères.');
@@ -64,6 +69,15 @@ export default function SignupPage() {
         return; // keep overlay until navigation
       }
 
+      // Supabase quirk: when the email is already registered, it returns
+      // SUCCESS with data.user populated but `identities` empty — and sends
+      // no email. Detect this so we can route the user to sign-in instead.
+      if (data.user && (!data.user.identities || data.user.identities.length === 0)) {
+        setEmailAlreadyRegistered(email.trim());
+        setSubmitting(false);
+        return;
+      }
+
       setSuccess(
         'Compte créé ! Vérifiez vos emails pour confirmer votre adresse, puis connectez-vous.'
       );
@@ -75,6 +89,44 @@ export default function SignupPage() {
   }
 
   const fullPageLoading = (!authLoading && !!user) || submitting;
+
+  // Specific UI when the email is already taken — guide them to sign-in.
+  if (emailAlreadyRegistered) {
+    return (
+      <main className="auth-page">
+        <div className="auth-card">
+          <div className="auth-already-block">
+            <div className="icon">◆</div>
+            <h2>
+              Compte <em>existant</em>
+            </h2>
+            <p>
+              Un compte existe déjà avec l&apos;adresse{' '}
+              <strong>{emailAlreadyRegistered}</strong>. Connectez-vous pour accéder à votre
+              historique de commandes.
+            </p>
+            <Link
+              href={`/auth/login?email=${encodeURIComponent(emailAlreadyRegistered)}&redirect=${encodeURIComponent(redirect)}`}
+              className="btn btn-dark"
+            >
+              SE CONNECTER À LA PLACE
+            </Link>
+            <button
+              type="button"
+              className="auth-already-back"
+              onClick={() => {
+                setEmailAlreadyRegistered(null);
+                setEmail('');
+              }}
+            >
+              Utiliser une autre adresse
+            </button>
+          </div>
+        </div>
+        <AuthOverlay open={fullPageLoading} message="Création du compte…" />
+      </main>
+    );
+  }
 
   return (
     <main className="auth-page">
