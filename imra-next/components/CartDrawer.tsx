@@ -42,13 +42,37 @@ export default function CartDrawer() {
   // placed as a guest.
   const [lastCustomerEmail, setLastCustomerEmail] = useState<string>('');
 
-  // Pre-fill email when user logs in
+  // When a logged-in user opens the cart, pre-fill the checkout form from
+  // their profile (name / phone / address) + their auth email. Only fills
+  // fields the user hasn't already typed in this session, so we never
+  // overwrite their in-progress edits.
   useEffect(() => {
-    if (user?.email && !form.email) {
-      setForm((f) => ({ ...f, email: user.email! }));
-    }
+    if (!user?.id) return;
+
+    let cancelled = false;
+    (async () => {
+      const supabase = createClient();
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('full_name, phone, address')
+        .eq('id', user.id)
+        .maybeSingle();
+      if (cancelled) return;
+
+      setForm((f) => ({
+        ...f,
+        email: f.email || user.email || '',
+        name: f.name || profile?.full_name || '',
+        phone: f.phone || profile?.phone || '',
+        address: f.address || profile?.address || '',
+      }));
+    })();
+
+    return () => {
+      cancelled = true;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.email]);
+  }, [user?.id]);
 
   // Close on Escape
   useEffect(() => {
@@ -105,6 +129,23 @@ export default function CartDrawer() {
 
       if (rpcErr || !orderId) {
         throw new Error(rpcErr?.message ?? 'Impossible de créer la commande.');
+      }
+
+      // For logged-in users: mirror the just-entered contact info back into
+      // their profile so it pre-fills next time AND shows in /account/profile.
+      // RLS already restricts this upsert to the caller's own row.
+      // We fire-and-forget — the order itself succeeded, so even if this fails
+      // we don't want to surface an error to the user.
+      if (user?.id) {
+        void supabase.from('profiles').upsert(
+          {
+            id: user.id,
+            full_name: form.name.trim() || null,
+            phone: form.phone.trim() || null,
+            address: form.address.trim() || null,
+          },
+          { onConflict: 'id' }
+        );
       }
 
       setLastOrderId(orderId as unknown as string);
