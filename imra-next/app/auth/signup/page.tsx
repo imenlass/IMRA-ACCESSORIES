@@ -90,7 +90,10 @@ export default function SignupPage() {
 
   const fullPageLoading = (!authLoading && !!user) || submitting;
 
-  // Specific UI when the email is already taken — guide them to sign-in.
+  // Specific UI when the email is already taken — guide them to sign-in
+  // or to reset their password (covers the case where they checked out as
+  // a guest before, an account got created, and they don't remember the
+  // password / never set one).
   if (emailAlreadyRegistered) {
     return (
       <main className="auth-page">
@@ -102,14 +105,22 @@ export default function SignupPage() {
             </h2>
             <p>
               Un compte existe déjà avec l&apos;adresse{' '}
-              <strong>{emailAlreadyRegistered}</strong>. Connectez-vous pour accéder à votre
-              historique de commandes.
+              <strong>{emailAlreadyRegistered}</strong>. Vous pouvez vous connecter, ou
+              recevoir un lien pour définir un nouveau mot de passe si vous ne vous en
+              souvenez pas.
             </p>
             <Link
               href={`/auth/login?email=${encodeURIComponent(emailAlreadyRegistered)}&redirect=${encodeURIComponent(redirect)}`}
               className="btn btn-dark"
             >
               SE CONNECTER À LA PLACE
+            </Link>
+            <Link
+              href={`/auth/forgot-password?email=${encodeURIComponent(emailAlreadyRegistered)}`}
+              className="btn"
+              style={{ marginTop: 8 }}
+            >
+              RÉINITIALISER LE MOT DE PASSE
             </Link>
             <button
               type="button"

@@ -103,6 +103,11 @@ export default function LoginPage() {
         </form>
 
         <div className="alt">
+          <Link href={`/auth/forgot-password${email ? `?email=${encodeURIComponent(email)}` : ''}`}>
+            MOT DE PASSE OUBLIÉ ?
+          </Link>
+        </div>
+        <div className="alt" style={{ marginTop: 10 }}>
           Pas encore de compte ?{' '}
           <Link href={`/auth/signup${redirect ? `?redirect=${encodeURIComponent(redirect)}` : ''}`}>
             S&apos;INSCRIRE
