@@ -1,0 +1,89 @@
+# ──────────────────────────────────────────────────────────────────
+# IMRA — root .gitignore
+# Applies to the entire repository tree.
+# ──────────────────────────────────────────────────────────────────
+
+# ─── Dependencies ──────────────────────────────────────────────────
+node_modules/
+.pnp
+.pnp.js
+.yarn/install-state.gz
+
+# ─── Next.js build output ─────────────────────────────────────────
+.next/
+out/
+build/
+dist/
+
+# ─── Production / runtime ─────────────────────────────────────────
+*.tsbuildinfo
+next-env.d.ts
+
+# ─── Environment variables (NEVER commit) ────────────────────────
+.env
+.env.local
+.env*.local
+.env.development.local
+.env.production.local
+.env.test.local
+
+# ─── Logs ─────────────────────────────────────────────────────────
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+lerna-debug.log*
+
+# ─── Testing / coverage ──────────────────────────────────────────
+/coverage
+.nyc_output
+*.lcov
+
+# ─── Netlify ──────────────────────────────────────────────────────
+.netlify/
+.netlify-cache/
+
+# ─── Vercel ───────────────────────────────────────────────────────
+.vercel
+
+# ─── Supabase local development ──────────────────────────────────
+.supabase/
+supabase/.temp/
+supabase/.branches/
+
+# ─── OS files ─────────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ─── Editors / IDEs ──────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
+*~
+.project
+.classpath
+*.sublime-project
+*.sublime-workspace
+
+# ─── TypeScript caches ───────────────────────────────────────────
+*.tsbuildinfo
+
+# ─── Temp / backup files ─────────────────────────────────────────
+*.bak
+*.tmp
+*.orig
+*.rej
+.cache/
+tmp/
+
+# ─── Archived legacy assets — kept locally only, not pushed ─────
+archive/
