@@ -65,7 +65,8 @@ desktop.ini
 # ─── Editors / IDEs ──────────────────────────────────────────────
 .vscode/
 .idea/
-.claude/         # Claude Code working directory
+# Claude Code working directory — inline comments aren't valid in gitignore
+.claude/
 *.swp
 *.swo
 *.swn
