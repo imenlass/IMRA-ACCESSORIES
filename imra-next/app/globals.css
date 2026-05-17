@@ -1224,6 +1224,14 @@ footer.site-footer p {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  align-items: flex-end;
+}
+/* When the cart drawer is open it covers the right side, so move the stack
+   to the left and reverse the slide-in animation accordingly. */
+.toast-stack.is-cart-open {
+  right: auto;
+  left: 24px;
+  align-items: flex-start;
 }
 .toast {
   background: var(--bg-card);
@@ -1235,14 +1243,44 @@ footer.site-footer p {
   letter-spacing: 1px;
   font-weight: 300;
   box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-  animation: toastIn 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: toastInFromRight 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   min-width: 250px;
+}
+.toast-stack.is-cart-open .toast {
+  animation-name: toastInFromLeft;
 }
 .toast.error { border-color: rgba(255,128,128,0.6); }
 .toast .accent { color: var(--gold); }
-@keyframes toastIn {
+@keyframes toastInFromRight {
   from { transform: translateX(120%); opacity: 0; }
   to   { transform: translateX(0); opacity: 1; }
+}
+@keyframes toastInFromLeft {
+  from { transform: translateX(-120%); opacity: 0; }
+  to   { transform: translateX(0); opacity: 1; }
+}
+
+/* On mobile the cart drawer covers the WHOLE viewport, so the toast would
+   sit on top of it either way. Bring it to the top-center instead so it
+   floats above the drawer header without covering any controls. */
+@media (max-width: 768px) {
+  .toast-stack.is-cart-open {
+    left: 50%;
+    right: auto;
+    bottom: auto;
+    top: 18px;
+    transform: translateX(-50%);
+    align-items: center;
+  }
+  .toast-stack.is-cart-open .toast {
+    animation-name: toastInFromTop;
+    min-width: 0;
+    max-width: calc(100vw - 32px);
+  }
+  @keyframes toastInFromTop {
+    from { transform: translateY(-120%); opacity: 0; }
+    to   { transform: translateY(0); opacity: 1; }
+  }
 }
 
 /* ── PRODUCT LOADING SKELETON ── */
